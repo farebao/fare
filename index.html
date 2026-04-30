@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechBot Robotics - 智能机器人解决方案</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a1a1a;
+      --secondary: #ffffff;
+      --accent: #3b82f6;
+      --text-light: #666666;
+      --text-dark: #1a1a1a;
+      --bg-light: #f8f9fa;
+      --transition: all 0.3s ease;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--text-dark);
+      background: var(--secondary);
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 1.5rem 0;
+      transition: var(--transition);
+    }
+
+    .nav.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+      padding: 1rem 0;
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .desktop-nav {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .desktop-nav a {
+      font-weight: 500;
+      color: var(--text-light);
+      cursor: pointer;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    .desktop-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      transition: var(--transition);
+    }
+
+    .desktop-nav a:hover,
+    .desktop-nav a.active {
+      color: var(--primary);
+    }
+
+    .desktop-nav a:hover::after,
+    .desktop-nav a.active::after {
+      width: 100%;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .mobile-menu-btn span {
+      width: 24px;
+      height: 2px;
+      background: var(--primary);
+      transition: var(--transition);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-menu.open {
+      display: block;
+    }
+
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 1rem;
+      color: var(--text-dark);
+      cursor: pointer;
+    }
+
+    /* Hero Section */
+    .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 80px; position: relative; overflow: hidden; }
+
+    .hero-content {
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-text {
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .hero-video-bg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title .line {
+      display: block;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .hero-title .line:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .hero-title .accent {
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.125rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      max-width: 500px;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.4s;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards 0.6s;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      padding: 0.875rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: 2px solid var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: #333;
+      border-color: #333;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 0.3s;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .robot-animation {
+      position: relative;
+      z-index: 2;
+    }
+
+    .robot-image {
+      width: 300px;
+      height: 400px;
+      object-fit: contain;
+      animation: robotFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes robotFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .floating-elements {
+      position: absolute;
+      inset: 0;
+    }
+
+    .float-circle {
+      position: absolute;
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .c1 {
+      width: 60px;
+      height: 60px;
+      background: rgba(59, 130, 246, 0.1);
+      top: 10%;
+      right: 20%;
+      animation-delay: 0s;
+    }
+
+    .c2 {
+      width: 80px;
+      height: 80px;
+      background: rgba(59, 130, 246, 0.08);
+      bottom: 20%;
+      left: 10%;
+      animation-delay: 2s;
+    }
+
+    .c3 {
+      width: 40px;
+      height: 40px;
+      background: rgba(59, 130, 246, 0.12);
+      top: 40%;
+      left: 5%;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-30px) rotate(180deg); }
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-light);
+      font-size: 0.875rem;
+      animation: bounce 2s infinite;
+    }
+
+    .mouse {
+      width: 24px;
+      height: 36px;
+      border: 2px solid var(--text-light);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .wheel {
+      width: 4px;
+      height: 8px;
+      background: var(--text-light);
+      border-radius: 2px;
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: scroll 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    @keyframes scroll {
+      0%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 0.5; transform: translateX(-50%) translateY(4px); }
+    }
+
+    /* Section Styles */
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-header p {
+      color: var(--text-light);
+      font-size: 1.125rem;
+    }
+
+    /* Products Section */
+    .products {
+      padding: 6rem 0;
+      background: var(--bg-light);
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .product-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      transition: var(--transition);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .product-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .product-icon {
+      margin-bottom: 1.5rem;
+    }
+
+    .product-icon svg {
+      width: 80px;
+      height: 80px;
+    }
+
+    .product-image {
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .robot-product-image {
+      width: 150px;
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .product-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .product-card p {
+      color: var(--text-light);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    .product-specs {
+      margin-bottom: 1.5rem;
+    }
+
+    .product-specs li {
+      font-size: 0.8125rem;
+      color: var(--text-light);
+      padding: 0.25rem 0;
+    }
+
+    .product-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .product-btn:hover {
+      background: #333;
+    }
+
+    /* About Section */
+    .about {
+      padding: 6rem 0;
+    }
+
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text p {
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg-light);
+      border-radius: 16px;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: var(--transition);
+    }
+
+    .stat-item.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .stat-item:hover {
+      transform: scale(1.05);
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: var(--text-light);
+      font-size: 0.875rem;
+    }
+
+    /* Services Section */
+    .services {
+      padding: 6rem 0;
+      background: var(--bg-light);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .service-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      text-align: center;
+      transition: var(--transition);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .service-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .service-icon svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1.5rem;
+    }
+
+    .service-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .service-card p {
+      color: var(--text-light);
+      font-size: 0.875rem;
+    }
+
+    /* Contact Section */
+    .contact {
+      padding: 6rem 0;
+    }
+
+    .contact-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+    }
+
+    .contact-info h2 {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .contact-info > p {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+    .contact-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .contact-item svg {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      padding: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: var(--transition);
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .submit-btn {
+      padding: 1rem 2rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .submit-btn:hover {
+      background: #333;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--primary);
+      color: white;
+      padding: 4rem 0 2rem;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-brand .logo {
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .footer-brand p {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .footer-links {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .footer-col h4 {
+      margin-bottom: 1.25rem;
+      font-size: 1rem;
+    }
+
+    .footer-col a {
+      display: block;
+      color: rgba(255, 255, 255, 0.6);
+      padding: 0.375rem 0;
+      font-size: 0.875rem;
+      transition: var(--transition);
+    }
+
+    .footer-col a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.875rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .products-grid,
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero-desc {
+        margin: 0 auto 2rem;
+      }
+
+      .hero-btns {
+        justify-content: center;
+      }
+
+      .hero-visual {
+        order: -1;
+      }
+
+      .about-content {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .desktop-nav {
+        display: none;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+      }
+
+      .hero-title {
+        font-size: 2.5rem;
+      }
+
+      .products-grid,
+      .services-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav" id="navbar">
+    <div class="container nav-content">
+      <div class="logo" onclick="scrollToSection('home')">
+        <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
+          <circle cx="20" cy="14" r="6" fill="currentColor"/>
+          <rect x="14" y="24" width="12" height="8" rx="2" fill="currentColor"/>
+          <circle cx="14" cy="28" r="2" fill="white"/>
+          <circle cx="26" cy="28" r="2" fill="white"/>
+        </svg>
+        <span>TechBot</span>
+      </div>
+
+      <nav class="desktop-nav">
+        <a data-section="home" class="active" onclick="scrollToSection('home')">首页</a>
+        <a data-section="products" onclick="scrollToSection('products')">产品</a>
+        <a data-section="about" onclick="scrollToSection('about')">关于</a>
+        <a data-section="services" onclick="scrollToSection('services')">服务</a>
+        <a data-section="contact" onclick="scrollToSection('contact')">联系</a>
+      </nav>
+
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a onclick="scrollToSection('home')">首页</a>
+      <a onclick="scrollToSection('products')">产品</a>
+      <a onclick="scrollToSection('about')">关于</a>
+      <a onclick="scrollToSection('services')">服务</a>
+      <a onclick="scrollToSection('contact')">联系</a>
+    </div>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="line">重新定义</span>
+          <span class="line accent">智能制造</span>
+        </h1>
+        <p class="hero-desc">
+          致力于为全球企业提供先进的机器人解决方案，赋能工业自动化，开启智能制造新纪元。
+        </p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="scrollToSection('products')">探索产品</button>
+          <button class="btn-secondary" onclick="scrollToSection('contact')">联系我们</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-video">
+      <video autoplay muted loop playsinline class="hero-video-bg">
+        <source src="/assets/%E7%94%9F%E6%88%90%E4%B8%8D%E5%90%8C%E8%A7%92%E5%BA%A6%E6%9C%BA%E5%99%A8%E4%BA%BA%E5%9B%BE%E7%89%87-CA74GqVr.mp4" type="video/mp4">
+        您的浏览器不支持视频播放。
+      </video>
+    </div>
+    <div class="scroll-indicator">
+      <div class="mouse">
+        <div class="wheel"></div>
+      </div>
+      <span>向下滚动</span>
+    </div>
+  </section>
+
+  <section id="products" class="products">
+    <div class="container">
+      <div class="section-header">
+        <h2>我们的产品</h2>
+        <p>覆盖工业、协作、移动和服务四大领域的机器人产品线</p>
+      </div>
+      <div class="products-grid">
+        <div class="product-card" data-animate>
+          <div class="product-image">
+            <img src="/assets/84f5211916e24b4e9f92faf37c0e9f2d.jpeg~tplv-a9rns2rl98-downsize_watermark_1_5_b-Dl3Madmi.png" alt="TB-100 Humanoid Robot" class="robot-product-image">
+          </div>
+          <h3>TB-100 人形机器人</h3>
+          <p>先进的人形机器人，具备高度的灵活性和精确的运动控制能力</p>
+          <ul class="product-specs">
+            <li>自由度: 24轴</li>
+            <li>负载: 15kg</li>
+            <li>工作半径: 1800mm</li>
+          </ul>
+          <button class="product-btn">了解更多</button>
+        </div>
+
+        <div class="product-card" data-animate>
+          <div class="product-image">
+            <img src="/assets/9f3afa44e73a46c9b7bd98ebe50adc06.jpeg~tplv-a9rns2rl98-downsize_watermark_1_5_b-DzwPnEo5.png" alt="TB-200 Humanoid Robot" class="robot-product-image">
+          </div>
+          <h3>TB-200 协作机器人</h3>
+          <p>人机协作安全机器人，配备先进的传感器系统和AI交互能力</p>
+          <ul class="product-specs">
+            <li>安全等级: ISO 10218-1</li>
+            <li>负载: 10kg</li>
+            <li>工作半径: 1600mm</li>
+          </ul>
+          <button class="product-btn">了解更多</button>
+        </div>
+
+        <div class="product-card" data-animate>
+          <div class="product-image">
+            <img src="/assets/a6a62e43f7ba44c6b948866192d7aa88.jpeg~tplv-a9rns2rl98-downsize_watermark_1_5_b-D1b7F1TK.png" alt="TB-300 Humanoid Robot" class="robot-product-image">
+          </div>
+          <h3>TB-300 服务机器人</h3>
+          <p>多功能服务机器人，可用于接待、导览、配送等多种场景</p>
+          <ul class="product-specs">
+            <li>对话系统: AI驱动</li>
+            <li>续航: 12小时</li>
+            <li>移动速度: 1.5m/s</li>
+          </ul>
+          <button class="product-btn">了解更多</button>
+        </div>
+
+        <div class="product-card" data-animate>
+          <div class="product-image">
+            <img src="/assets/b6b13775690c408ba3480913713550c9.jpeg~tplv-a9rns2rl98-downsize_watermark_1_5_b-Bavd4jvc.png" alt="TB-400 Humanoid Robot" class="robot-product-image">
+          </div>
+          <h3>TB-400 工业机器人</h3>
+          <p>高精度工业机器人，适用于装配、搬运、焊接等工业场景</p>
+          <ul class="product-specs">
+            <li>重复精度: ±0.02mm</li>
+            <li>负载: 20kg</li>
+            <li>工作半径: 2000mm</li>
+          </ul>
+          <button class="product-btn">了解更多</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <div class="container">
+      <div class="about-content">
+        <div class="about-text">
+          <h2>关于 TechBot</h2>
+          <p>
+            TechBot Robotics 成立于2010年，是一家专注于智能机器人研发与制造的高新技术企业。
+            我们汇聚了来自全球的顶尖工程师和科学家，致力于将前沿机器人技术转化为实用的解决方案。
+          </p>
+          <p>
+            凭借15年的行业深耕，我们已为500多家企业客户提供服务，部署超过2000台机器人系统，
+            客户满意度高达98%。我们的机器人广泛应用于汽车制造、电子组装、物流仓储、医疗健康等领域。
+          </p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item" data-animate>
+            <span class="stat-value" data-count="500">0</span>
+            <span class="stat-label">企业客户</span>
+          </div>
+          <div class="stat-item" data-animate>
+            <span class="stat-value" data-count="2000">0</span>
+            <span class="stat-label">部署机器人</span>
+          </div>
+          <div class="stat-item" data-animate>
+            <span class="stat-value" data-count="98" data-suffix="%">0</span>
+            <span class="stat-label">客户满意度</span>
+          </div>
+          <div class="stat-item" data-animate>
+            <span class="stat-value" data-count="15">0</span>
+            <span class="stat-label">年行业经验</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="services">
+    <div class="container">
+      <div class="section-header">
+        <h2>我们的服务</h2>
+        <p>从咨询到实施，提供全流程专业服务</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card" data-animate>
+          <div class="service-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="#3b82f6" stroke-width="2"/>
+              <path d="M24 14v10l6 6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>工业自动化</h3>
+          <p>为制造企业提供完整的自动化解决方案</p>
+        </div>
+
+        <div class="service-card" data-animate>
+          <div class="service-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="#3b82f6" stroke-width="2"/>
+              <path d="M24 14v10l6 6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>机器人集成</h3>
+          <p>根据需求定制机器人系统集成服务</p>
+        </div>
+
+        <div class="service-card" data-animate>
+          <div class="service-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="#3b82f6" stroke-width="2"/>
+              <path d="M24 14v10l6 6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>技术培训</h3>
+          <p>专业的机器人操作与维护培训课程</p>
+        </div>
+
+        <div class="service-card" data-animate>
+          <div class="service-icon">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20" stroke="#3b82f6" stroke-width="2"/>
+              <path d="M24 14v10l6 6" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>售后服务</h3>
+          <p>7×24小时技术支持与维护服务</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact">
+    <div class="container">
+      <div class="contact-wrapper">
+        <div class="contact-info">
+          <h2>联系我们</h2>
+          <p>准备好开启您的智能制造之旅了吗？</p>
+          <div class="contact-details">
+            <div class="contact-item">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1118 0z" stroke="currentColor" stroke-width="2"/>
+                <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <span>上海市浦东新区张江高科技园区机器人路88号</span>
+            </div>
+            <div class="contact-item">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <span>400-888-6666</span>
+            </div>
+            <div class="contact-item">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2"/>
+                <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <span>contact@techbot.com</span>
+            </div>
+          </div>
+        </div>
+        <form class="contact-form" onsubmit="handleSubmit(event)">
+          <input type="text" placeholder="您的姓名" required>
+          <input type="email" placeholder="电子邮箱" required>
+          <input type="text" placeholder="公司名称">
+          <textarea placeholder="请描述您的需求..." rows="4"></textarea>
+          <button type="submit" class="submit-btn">发送消息</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="logo">
+            <svg class="logo-icon" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
+              <circle cx="20" cy="14" r="6" fill="currentColor"/>
+              <rect x="14" y="24" width="12" height="8" rx="2" fill="currentColor"/>
+            </svg>
+            <span>TechBot</span>
+          </div>
+          <p>引领智能制造新未来</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>产品</h4>
+            <a>工业机械臂</a>
+            <a>协作机器人</a>
+            <a>移动机器人</a>
+            <a>服务机器人</a>
+          </div>
+          <div class="footer-col">
+            <h4>公司</h4>
+            <a>关于我们</a>
+            <a>新闻动态</a>
+            <a>加入我们</a>
+          </div>
+          <div class="footer-col">
+            <h4>支持</h4>
+            <a>技术支持</a>
+            <a>文档中心</a>
+            <a>常见问题</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 TechBot Robotics. 保留所有权利.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navigation scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      updateActiveNav();
+    });
+
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenu.classList.toggle('open');
+    }
+
+    // Scroll to section
+    function scrollToSection(sectionId) {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        closeMobileMenu();
+      }
+    }
+
+    function closeMobileMenu() {
+      const mobileMenu = document.getElementById('mobileMenu');
+      mobileMenu.classList.remove('open');
+    }
+
+    // Update active nav
+    function updateActiveNav() {
+      const sections = ['home', 'products', 'about', 'services', 'contact'];
+      const navLinks = document.querySelectorAll('.desktop-nav a');
+      
+      let currentSection = 'home';
+      
+      sections.forEach(sectionId => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 150) {
+            currentSection = sectionId;
+          }
+        }
+      });
+
+      navLinks.forEach(link => {
+        if (link.dataset.section === currentSection) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          
+          // Counter animation for stats
+          if (entry.target.classList.contains('stat-item')) {
+            const counter = entry.target.querySelector('.stat-value');
+            if (counter && counter.dataset.count) {
+              animateCounter(counter);
+            }
+          }
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('[data-animate]').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Counter animation
+    function animateCounter(element) {
+      const target = parseInt(element.dataset.count);
+      const suffix = element.dataset.suffix || '';
+      const duration = 2000;
+      const step = target / (duration / 16);
+      let current = 0;
+
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        element.textContent = Math.floor(current) + suffix;
+      }, 16);
+    }
+
+    // Form submission
+    function handleSubmit(event) {
+      event.preventDefault();
+      alert('感谢您的留言！我们会尽快与您联系。');
+      event.target.reset();
+    }
+
+    // Smooth reveal on load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.style.opacity = '0';
+      document.body.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        document.body.style.opacity = '1';
+      }, 100);
+    });
+  </script>
+</body>
+</html>
